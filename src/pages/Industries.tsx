@@ -50,6 +50,25 @@ export default function Industries() {
 
   });
 
+  // Canonical URL for the Industries page.
+  // Keep a single canonical link even if one already exists.
+  useEffect(() => {
+    const canonicalUrl = "https://solifyhub.com/industries";
+    const links = document.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]');
+    let canonical = links[0];
+
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.rel = "canonical";
+      document.head.appendChild(canonical);
+    }
+
+    canonical.href = canonicalUrl;
+    links.forEach((link, index) => {
+      if (index > 0) link.remove();
+    });
+  }, []);
+
   const [selectedIndustry, setSelectedIndustry] =
 
     useState<Industry | null>(null);

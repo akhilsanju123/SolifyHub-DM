@@ -2,9 +2,9 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import {
 
-  ArrowRight, ArrowUpRight, Target, Eye, Lightbulb,
+  ArrowRight, Target, Eye, Lightbulb,
 
-  TrendingUp, HeartHandshake, Sparkles, RotateCcw,
+  TrendingUp, HeartHandshake, Sparkles,
 
 } from "lucide-react";
 
@@ -15,30 +15,6 @@ import PageHero from "../components/shared/PageHero";
 import CTA from "../components/shared/CTA";
 
 import { useSEO } from "../hooks/useSEO";
-
-
-
-// Replace these sample names, roles and portraits with your actual team.
-
-const teamMembers = [
-
-  { name: "Team Member 01", role: "Founder & Creative Director", bio: "Leading creative ideas and building meaningful brand experiences.", image: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=800" },
-
-  { name: "Team Member 02", role: "Digital Marketing Strategist", bio: "Connecting strategy, insight, and performance to help brands grow.", image: "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=800" },
-
-  { name: "Team Member 03", role: "Graphic Designer", bio: "Creating thoughtful visuals that bring stories and identities to life.", image: "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=800" },
-
-  { name: "Team Member 04", role: "Web Developer", bio: "Building fast, engaging digital experiences that feel effortless.", image: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=800" },
-
-  { name: "Team Member 05", role: "Social Media Manager", bio: "Creating engaging social campaigns and building online communities.", image: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=800" },
-
-  { name: "Team Member 06", role: "Video Editor", bio: "Turning ideas into compelling videos and motion-driven stories.", image: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=800" },
-
-  { name: "Team Member 07", role: "Content Strategist", bio: "Crafting clear messages and content that connects with audiences.", image: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=800" },
-
-  { name: "Team Member 08", role: "Brand Designer", bio: "Developing distinctive visual identities for ambitious brands.", image: "https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=800" },
-
-];
 
 
 
@@ -122,155 +98,39 @@ function Reveal({ children, delay = 0, className = "" }: { children: ReactNode; 
 
 
 
-type TeamMember = (typeof teamMembers)[number];
-
-
-
-function TeamFlipCard({ member, index }: { member: TeamMember; index: number }) {
-
-  const [flipped, setFlipped] = useState(false);
-
-  const [paused, setPaused] = useState(false);
-
-  const [inView, setInView] = useState(false);
-
-  const ref = useRef<HTMLDivElement>(null);
-
-  const reducedMotion = useRef(false);
-
-
-
-  useEffect(() => {
-
-    reducedMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    const element = ref.current;
-
-    if (!element) return;
-
-    if (!("IntersectionObserver" in window)) {
-
-      setInView(true);
-
-      return;
-
-    }
-
-    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.2 });
-
-    observer.observe(element);
-
-    return () => observer.disconnect();
-
-  }, []);
-
-
-
-  useEffect(() => {
-
-    if (!inView || paused || reducedMotion.current) return;
-
-    const timer = window.setTimeout(() => setFlipped(current => !current), 3000);
-
-    return () => window.clearTimeout(timer);
-
-  }, [inView, paused, flipped]);
-
-
-
+function CEOProfile() {
   return (
-
-    <div
-
-      ref={ref}
-
-      className="team-flip-shell h-full"
-
-      onMouseEnter={() => setPaused(true)}
-
-      onMouseLeave={() => setPaused(false)}
-
-      onFocus={() => setPaused(true)}
-
-      onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}
-
-    >
-
-      <button
-
-        type="button"
-
-        onClick={() => setFlipped(current => !current)}
-
-        className="team-flip-button block h-full w-full cursor-pointer rounded-[26px] text-left outline-none focus-visible:ring-4 focus-visible:ring-blue-300"
-
-        aria-label={`${member.name}, ${member.role}. ${flipped ? "Show photo" : "Show profile"}`}
-
-        aria-pressed={flipped}
-
-      >
-
-        <div className={`team-flip-inner ${flipped ? "is-flipped" : ""}`}>
-
-          <div className="team-flip-face team-flip-front overflow-hidden rounded-[26px] border border-[#e2eaf5] bg-white shadow-[0_12px_36px_rgba(7,25,78,.08)]">
-
-            <div className="relative aspect-[3/4] overflow-hidden bg-[#eaf0fa]">
-
-              <img src={member.image} alt={`${member.name} portrait`} loading="lazy" className="h-full w-full object-cover object-center" />
-
-              <div className="absolute inset-0 bg-gradient-to-t from-[#07194E]/55 via-transparent to-transparent" />
-
-              <span className="absolute left-5 top-5 rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold text-[#07194E]">{String(index + 1).padStart(2, "0")}</span>
-
-              <span className="absolute bottom-5 right-5 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#1254F4]"><RotateCcw size={18} /></span>
-
-            </div>
-
-            <div className="p-6">
-
-              <h3 className="font-display text-xl font-extrabold text-[#07194E]">{member.name}</h3>
-
-              <p className="mt-2 text-sm text-[#64748b]">{member.role}</p>
-
-              <div className="mt-5 h-[2px] w-10 bg-[#2563eb]" />
-
-            </div>
-
+    <div className="ceo-profile mx-auto grid max-w-[1000px] items-center gap-8 md:grid-cols-[340px_1fr] md:gap-14">
+      <Reveal>
+        <div className="ceo-photo-wrap relative mx-auto h-[280px] w-[280px] sm:h-[320px] sm:w-[320px]">
+          <div className="ceo-main-circle absolute inset-3 rounded-full bg-gradient-to-br from-[#00CFFF] via-[#1254F4] to-[#7A00FF]" />
+          <span className="ceo-dot-one absolute right-0 top-12 z-20 h-12 w-12 rounded-full bg-gradient-to-br from-[#1254F4] to-[#7A00FF]" />
+          <span className="ceo-dot-two absolute bottom-8 right-1 z-20 h-9 w-9 rounded-full bg-[#00CFFF]" />
+          <div className="absolute inset-4 z-10 overflow-hidden rounded-full bg-[#eef4ff] ring-[6px] ring-white shadow-[0_18px_40px_rgba(18,84,244,.15)]">
+            <img src="/CEO.png" alt="Dakshayani Ravada, Founder and CEO of SOLIFYHUB" loading="lazy" decoding="async" className="h-full w-full object-cover object-center transition-transform duration-700 hover:scale-105" />
           </div>
-
-          <div className="team-flip-face team-flip-back flex flex-col justify-between overflow-hidden rounded-[26px] bg-gradient-to-br from-[#07194e] via-[#1254F4] to-[#2563eb] p-7 text-white shadow-[0_18px_45px_rgba(7,25,78,.2)]">
-
-            <div className="flex items-center justify-between"><span className="text-xs font-bold uppercase tracking-[.22em] text-blue-200">SOLIFYHUB TEAM</span><Sparkles size={25} className="text-blue-200" /></div>
-
-            <div>
-
-              <span className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/25 bg-white/10"><ArrowUpRight size={27} /></span>
-
-              <h3 className="font-display text-2xl font-extrabold leading-tight">{member.name}</h3>
-
-              <p className="mt-2 text-sm font-semibold text-blue-200">{member.role}</p>
-
-              <div className="my-6 h-px bg-white/20" />
-
-              <p className="text-sm leading-7 text-white/85">{member.bio}</p>
-
-            </div>
-
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-100"><RotateCcw size={15} /> Tap to see photo</div>
-
-          </div>
-
         </div>
-
-      </button>
-
+      </Reveal>
+      <Reveal delay={150}>
+        <div className="text-center md:text-left">
+          <h3 className="font-display text-[30px] font-extrabold tracking-tight text-[#07194E] sm:text-[38px]">Dakshayani Ravada</h3>
+          <div className="mt-3 flex items-center justify-center gap-3 md:justify-start">
+            <span className="h-[3px] w-10 bg-[#1254F4]" />
+            <span className="text-xs font-extrabold uppercase tracking-[.16em] text-[#1254F4] sm:text-sm">Founder &amp; CEO</span>
+          </div>
+          <p className="mx-auto mt-6 max-w-[520px] text-[15px] leading-8 text-[#64748b] md:mx-0 md:text-[16px]">
+            Dakshayani Ravada leads SOLIFYHUB with a vision to empower businesses through creativity, technology, and digital marketing. Focused on building strong brands and driving meaningful business growth.
+          </p>
+          <div className="mt-7 flex justify-center md:justify-start">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#dbeafe] bg-[#eff6ff] px-4 py-2 text-xs font-bold text-[#1254F4]">
+              <Sparkles size={14} /> Leading with Vision &amp; Creativity
+            </span>
+          </div>
+        </div>
+      </Reveal>
     </div>
-
   );
-
 }
-
-
 
 export default function AboutUs() {
   const handleWorkWithUs = () => {
@@ -290,11 +150,22 @@ export default function AboutUs() {
   };
 
 
+  // Canonical URL for the About Us page.
+  // If useSEO already manages canonical tags, prefer that centralized implementation.
+  useEffect(() => {
+    const canonicalUrl = "https://solifyhub.com/about-us";
+    const existing = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    const canonical = existing ?? document.createElement("link");
+    canonical.setAttribute("rel", "canonical");
+    canonical.setAttribute("href", canonicalUrl);
+    if (!existing) document.head.appendChild(canonical);
+  }, []);
+
   useSEO({
 
-    title: "About SOLIFYHUB — Creative Digital Agency in Visakhapatnam",
+    title: "About SOLIFYHUB | Digital Marketing Agency in Vizag",
 
-    description: "Learn about SOLIFYHUB, a creative digital marketing agency in Visakhapatnam combining strategy, design, technology and performance to help ambitious businesses grow.",
+    description: "Learn about SOLIFYHUB, a digital marketing agency in Visakhapatnam offering creative strategy, branding, web design and marketing solutions for businesses.",
 
     path: "/about-us",
 
@@ -842,26 +713,27 @@ export default function AboutUs() {
 
 
 
-      {/* Eight team cards */}
-
+      {/* Meet our team — CEO only */}
       <section className="relative overflow-hidden bg-[#f8faff] py-24 md:py-28">
-
         <div className="container-wide">
-
-          <Reveal><div className="mb-14 flex flex-col justify-between gap-7 md:flex-row md:items-end"><div><div className="mb-5 flex items-center gap-3"><span className="text-xs font-bold uppercase tracking-[.25em] text-[#2563eb]">THE PEOPLE BEHIND THE IDEAS</span></div><h2 className="font-display text-4xl font-extrabold tracking-tight text-[#07194E] md:text-5xl lg:text-6xl">Meet our <span className="text-[#2563eb]">team.</span></h2></div><p className="max-w-md text-base leading-8 text-[#64748b]">Different skills. Shared ambition. A team of creative minds and strategic thinkers working together to bring meaningful ideas to life.</p></div></Reveal>
-
-          <div className="grid grid-cols-1 items-stretch gap-7 sm:grid-cols-2 lg:grid-cols-4">
-
-            {teamMembers.map((member, index) => <Reveal key={member.name} delay={(index % 4) * 100} className="h-full"><TeamFlipCard member={member} index={index} /></Reveal>)}
-
-          </div>
-
-          <p className="mt-7 text-center text-sm text-[#64748b]">Cards flip automatically every 3 seconds. Hover to pause, or tap a card to flip it.</p>
-
-          <Reveal><div className="mt-16 flex flex-col items-center justify-between gap-8 rounded-[28px] border border-[#dfe8f5] bg-white px-8 py-10 md:flex-row md:px-12"><div><p className="mb-3 text-xs font-bold uppercase tracking-[.2em] text-[#2563eb]">BETTER TOGETHER</p><h3 className="font-display text-2xl font-extrabold text-[#07194E] md:text-3xl">Great ideas grow through collaboration.</h3><p className="mt-3 text-sm leading-7 text-[#64748b]">Every project is an opportunity to combine different perspectives, fresh thinking, and meaningful creativity.</p></div><button type="button" onClick={handleWorkWithUs} className="group inline-flex shrink-0 items-center gap-3 rounded-full bg-[#1254F4] px-8 py-4 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-[#07194E] hover:shadow-lg">Work With Us <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" /></button></div></Reveal>
-
+          <Reveal>
+            <div className="mb-14 text-center">
+              <p className="mb-5 text-xs font-bold uppercase tracking-[.25em] text-[#2563eb]">THE VISION BEHIND SOLIFYHUB</p>
+              <h2 className="font-display text-4xl font-extrabold tracking-tight text-[#07194E] md:text-5xl lg:text-6xl">Meet our <span className="text-[#2563eb]">team.</span></h2>
+            </div>
+          </Reveal>
+          <CEOProfile />
+          <Reveal>
+            <div className="mt-16 flex flex-col items-center justify-between gap-8 rounded-[28px] border border-[#dfe8f5] bg-white px-8 py-10 md:flex-row md:px-12">
+              <div>
+                <p className="mb-3 text-xs font-bold uppercase tracking-[.2em] text-[#2563eb]">BETTER TOGETHER</p>
+                <h3 className="font-display text-2xl font-extrabold text-[#07194E] md:text-3xl">Great ideas grow through collaboration.</h3>
+                <p className="mt-3 text-sm leading-7 text-[#64748b]">Every project is an opportunity to combine different perspectives, fresh thinking, and meaningful creativity.</p>
+              </div>
+              <button type="button" onClick={handleWorkWithUs} className="group inline-flex shrink-0 items-center gap-3 rounded-full bg-[#1254F4] px-8 py-4 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-[#07194E] hover:shadow-lg">Work With Us <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" /></button>
+            </div>
+          </Reveal>
         </div>
-
       </section>
 
       <CTA />
@@ -872,21 +744,14 @@ export default function AboutUs() {
 
         .about-feature-card:hover { transform: translateY(-8px); border-color: #bfd4fa; box-shadow: 0 22px 55px rgba(7,25,78,.09); }
 
-        .team-flip-shell { perspective: 1300px; }
-
-        .team-flip-inner { position: relative; display: grid; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 900ms cubic-bezier(.2,.75,.25,1); }
-
-        .team-flip-inner.is-flipped { transform: rotateY(180deg); }
-
-        .team-flip-face { grid-area: 1 / 1; width: 100%; min-width: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-
-        .team-flip-front { transform: rotateY(0deg); }
-
-        .team-flip-back { transform: rotateY(180deg); }
-
+        .ceo-main-circle { animation: ceoPulse 5s ease-in-out infinite; }
+        .ceo-dot-one { animation: ceoFloat 4s ease-in-out infinite; }
+        .ceo-dot-two { animation: ceoFloat 3.5s ease-in-out infinite reverse; }
+        @keyframes ceoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        @keyframes ceoPulse { 0%, 100% { filter: brightness(1); transform: scale(1); } 50% { filter: brightness(1.1); transform: scale(1.035); } }
         @media (prefers-reduced-motion: reduce) {
 
-          .about-feature-card, .team-flip-inner, .about-feature-card * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+          .about-feature-card, .ceo-main-circle, .ceo-dot-one, .ceo-dot-two, .about-feature-card * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
 
           .about-feature-card:hover { transform: none; }
 

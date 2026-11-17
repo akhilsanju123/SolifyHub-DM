@@ -1374,10 +1374,28 @@ export default function ServiceDetail({slug}:{slug:string}) {
 
 
 
+  // Keep one canonical URL for the currently selected service route.
+  useEffect(() => {
+    const canonicalUrl = `https://solifyhub.com/services/${encodeURIComponent(slug)}`;
+    const links = document.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]');
+    let canonical = links[0];
+
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.rel = 'canonical';
+      document.head.appendChild(canonical);
+    }
+
+    canonical.href = canonicalUrl;
+    links.forEach((link, index) => {
+      if (index > 0) link.remove();
+    });
+  }, [slug]);
+
   useSEO({
     title: service.seoTitle,
     description: service.seoDescription,
-    path: `/services/${service.slug}`,
+    path: `/services/${slug}`,
     keywords: `${service.title.toLowerCase()} agency Visakhapatnam, ${service.title.toLowerCase()} Vizag, ${service.title.toLowerCase()} Andhra Pradesh, digital marketing services`,
     image: service.image,
     schema: {
@@ -1394,7 +1412,7 @@ export default function ServiceDetail({slug}:{slug:string}) {
         '@type': 'City',
         name: 'Visakhapatnam',
       },
-      url: `https://solifyhub.com/services/${service.slug}`,
+      url: `https://solifyhub.com/services/${slug}`,
     },
   });
 

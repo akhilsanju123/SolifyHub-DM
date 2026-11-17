@@ -1,4 +1,5 @@
 
+import { useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 
 import {
@@ -44,12 +45,14 @@ const blogCards = [
 // ==========================================
 
 export default function Blogs() {
+  const canonicalUrl = 'https://solifyhub.com/blogs';
+
   useSEO({
     title:
-      'Digital Marketing Blog & Insights | SOLIFYHUB Visakhapatnam',
+      'Digital Marketing Blog & SEO Tips | SOLIFYHUB Vizag',
 
     description:
-      'Practical insights on local SEO, social media marketing, web design and digital growth for businesses in Visakhapatnam and Andhra Pradesh.',
+      'Explore SEO tips, social media marketing strategies and digital growth insights from SOLIFYHUB, a digital marketing agency in Visakhapatnam.',
 
     path: '/blogs',
 
@@ -62,9 +65,35 @@ export default function Blogs() {
       name: 'SOLIFYHUB Journal',
       description:
         'Practical digital marketing insights for businesses in Visakhapatnam.',
-      url: 'https://solifyhub.com/blogs',
+      url: canonicalUrl,
     },
   });
+
+  // ==========================================
+  // CANONICAL TAG
+  // ==========================================
+
+  useEffect(() => {
+    const canonicalLinks = document.querySelectorAll(
+      'link[rel="canonical"]'
+    );
+
+    let canonical = canonicalLinks[0] as HTMLLinkElement | undefined;
+
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.rel = 'canonical';
+      document.head.appendChild(canonical);
+    }
+
+    canonical.href = canonicalUrl;
+
+    canonicalLinks.forEach((link, index) => {
+      if (index > 0) {
+        link.remove();
+      }
+    });
+  }, []);
 
   return (
     <>

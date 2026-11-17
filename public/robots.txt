@@ -1,5 +1,7 @@
+# SOLIFYHUB public website crawler directives
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /admin/
 
 Sitemap: https://solifyhub.com/sitemap.xml

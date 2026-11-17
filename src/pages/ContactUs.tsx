@@ -1,5 +1,5 @@
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import {
   ArrowUpRight,
@@ -114,6 +114,23 @@ export default function ContactUs() {
       url: "https://solifyhub.com/contact-us",
     },
   });
+
+  // Keep a single canonical URL for the Contact Us page.
+  // If useSEO already handles canonicals, remove this effect and manage it there.
+  useEffect(() => {
+    const url = "https://solifyhub.com/contact-us";
+    const links = document.head.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]');
+    let canonical = links[0];
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.rel = "canonical";
+      document.head.appendChild(canonical);
+    }
+    canonical.href = url;
+    links.forEach((link, index) => {
+      if (index > 0) link.remove();
+    });
+  }, []);
 
   // FORM STATUS
   const [status, setStatus] = useState<

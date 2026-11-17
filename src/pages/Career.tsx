@@ -184,6 +184,20 @@ const cultureValues = [
 ];
 
 export default function Career() {
+  // Canonical URL for the careers page.
+  useEffect(() => {
+    const url = "https://solifyhub.com/career";
+    const links = document.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]');
+    let link = links[0];
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "canonical";
+      document.head.appendChild(link);
+    }
+    link.href = url;
+    links.forEach((item, index) => { if (index > 0) item.remove(); });
+  }, []);
+
   useSEO({
     title: "Careers at SOLIFYHUB — Join Our Creative Team in Visakhapatnam",
     description: "Build your career with SOLIFYHUB, a creative digital marketing agency in Visakhapatnam. We are building a thoughtful, curious team around great questions and generous collaboration.",
@@ -191,15 +205,15 @@ export default function Career() {
     keywords: "careers Visakhapatnam, digital marketing jobs Vizag, creative agency jobs Andhra Pradesh, marketing jobs Visakhapatnam",
     schema: {
       "@context": "https://schema.org",
-      "@type": "JobPosting",
-      title: "Career Opportunities at SOLIFYHUB",
+      "@type": "WebPage",
+      name: "Careers at SOLIFYHUB",
       description: "Join SOLIFYHUB, a creative digital marketing agency in Visakhapatnam.",
-      hiringOrganization: {
+      about: {
         "@type": "Organization",
         name: "SOLIFYHUB",
         sameAs: "https://solifyhub.com",
       },
-      jobLocation: {
+      spatialCoverage: {
         "@type": "Place",
         address: {
           "@type": "PostalAddress",

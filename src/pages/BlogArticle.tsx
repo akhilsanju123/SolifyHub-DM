@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { navigate, images } from '../data/siteData';
 import PageHero from '../components/shared/PageHero';
@@ -1047,6 +1048,18 @@ export default function BlogArticle({ slug }: { slug?: string }) {
   const currentSlug = slug || pathname.split('/').filter(Boolean)[1] || '';
   const article = articles.find(item => item.slug === currentSlug);
   const selected = article || articles[0];
+
+  // Keep one canonical link per article URL, including client-side navigation.
+  useEffect(() => {
+    if (!article) return;
+    const canonicalUrl = `https://solifyhub.com/blogs/${article.slug}`;
+    const links = Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]'));
+    const canonical = links[0] ?? document.createElement('link');
+    canonical.rel = 'canonical';
+    canonical.href = canonicalUrl;
+    if (!canonical.isConnected) document.head.appendChild(canonical);
+    links.slice(1).forEach(link => link.remove());
+  }, [article]);
 
   useSEO({
     title: `${selected.title} | SOLIFYHUB`,

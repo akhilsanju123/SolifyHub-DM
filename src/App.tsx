@@ -1,285 +1,135 @@
 
+import { lazy, Suspense, useEffect } from 'react';
 import './App.css';
-
 import { usePath } from './data/siteData';
 
-// ==========================================
-// SHARED COMPONENTS
-// ==========================================
-
-import AdminPage from './components/AdminPage';
 import Header from './components/shared/Header';
 import Footer from './components/shared/Footer';
 import SocialRail from './components/shared/SocialRail';
 
-// ==========================================
-// MAIN WEBSITE PAGES
-// ==========================================
+const AdminPage = lazy(() => import('./components/AdminPage'));
+const Home = lazy(() => import('./pages/Home'));
+const AboutUs = lazy(() => import('./pages/AboutUs'));
+const Capabilities = lazy(() => import('./pages/Capabilities'));
+const ContactUs = lazy(() => import('./pages/ContactUs'));
+const Career = lazy(() => import('./pages/Career'));
+const TeamPage = lazy(() => import('./pages/TeamPage'));
+const Industries = lazy(() => import('./pages/Industries'));
+const Portfolio = lazy(() => import('./pages/Portfolio'));
+const BlogArticle = lazy(() => import('./pages/BlogArticle'));
+const Blogs = lazy(() => import('./pages/Blogs'));
+const LegalPage = lazy(() => import('./pages/LegalPage'));
+const SimplePage = lazy(() => import('./pages/SimplePage'));
 
-import Home from './pages/Home';
-import AboutUs from './pages/AboutUs';
-import Capabilities from './pages/Capabilities';
-import ContactUs from './pages/ContactUs';
-import Career from './pages/Career';
-import TeamPage from './pages/TeamPage';
-import Industries from './pages/Industries';
-import Portfolio from './pages/Portfolio';
-import BlogArticle from './pages/BlogArticle';
-import Blogs from './pages/Blogs';
-import LegalPage from './pages/LegalPage';
-import SimplePage from './pages/SimplePage';
-
-// ==========================================
-// ALL 12 SERVICE PAGE IMPORTS
-// ==========================================
-
-import Branding from './pages/services/Branding';
-import GraphicDesign from './pages/services/GraphicDesign';
-import Advertising from './pages/services/Advertising';
-import VideoProduction from './pages/services/VideoProduction';
-import SocialMediaCreatives from './pages/services/SocialMediaCreatives';
-import ContentCreation from './pages/services/ContentCreation';
-import WebDesign from './pages/services/WebDesign';
-import MotionGraphics from './pages/services/MotionGraphics';
-import Campaigns from './pages/services/Campaigns';
-import CreativeStrategy from './pages/services/CreativeStrategy';
-import DigitalMarketing from './pages/services/DigitalMarketing';
-import AppDevelopment from './pages/services/AppDevelopment';
-
-// ==========================================
-// ALL 12 SERVICE ROUTES
-// ==========================================
-
-const serviceRoutes: Record<string, () => JSX.Element> = {
-  // 01 - Branding
-  branding: Branding,
-
-  // 02 - Graphic Design
-  'graphic-design': GraphicDesign,
-
-  // 03 - Advertising
-  advertising: Advertising,
-
-  // 04 - Video Production
-  'video-production': VideoProduction,
-
-  // 05 - Social Media Creatives
-  'social-media-creatives': SocialMediaCreatives,
-
-  // 06 - Content Creation
-  'content-creation': ContentCreation,
-
-  // 07 - Web Design
-  'web-design': WebDesign,
-
-  // 08 - Motion Graphics
-  'motion-graphics': MotionGraphics,
-
-  // 09 - Campaigns
-  campaigns: Campaigns,
-
-  // 10 - Creative Strategy
-  'creative-strategy': CreativeStrategy,
-
-  // 11 - Digital Marketing
-  'digital-marketing': DigitalMarketing,
-
-  // 12 - App Development
-  'app-development': AppDevelopment,
+const serviceRoutes = {
+  branding: lazy(() => import('./pages/services/Branding')),
+  'graphic-design': lazy(() => import('./pages/services/GraphicDesign')),
+  advertising: lazy(() => import('./pages/services/Advertising')),
+  'video-production': lazy(() => import('./pages/services/VideoProduction')),
+  'social-media-creatives': lazy(() => import('./pages/services/SocialMediaCreatives')),
+  'content-creation': lazy(() => import('./pages/services/ContentCreation')),
+  'web-design': lazy(() => import('./pages/services/WebDesign')),
+  'motion-graphics': lazy(() => import('./pages/services/MotionGraphics')),
+  campaigns: lazy(() => import('./pages/services/Campaigns')),
+  'creative-strategy': lazy(() => import('./pages/services/CreativeStrategy')),
+  'digital-marketing': lazy(() => import('./pages/services/DigitalMarketing')),
+  'app-development': lazy(() => import('./pages/services/AppDevelopment')),
 };
 
-// ==========================================
-// BLOG ROUTES
-// ==========================================
-
-const blogSlugs = [
+const blogSlugs = new Set([
   'local-seo-visakhapatnam',
   'social-media-marketing-2026',
   'why-choose-solifyhub',
-];
+]);
 
-// ==========================================
-// MAIN APPLICATION
-// ==========================================
+function RouteContent({ path }: { path: string }) {
+  if (path === '/') return <Home />;
+  if (path === '/about-us') return <AboutUs />;
+  if (path === '/services') return <Capabilities />;
 
-function App() {
-  const currentPath = usePath();
-
-  // Remove query parameters, hash and trailing slash
-  // so existing routes continue working.
-  const path =
-    currentPath.split('?')[0].split('#')[0].replace(/\/+$/, '') ||
-    '/';
-
-  let page: JSX.Element;
-
-  // ========================================
-  // ADMIN PAGE
-  // ========================================
-
-  if (path.startsWith('/admin')) {
-    page = <AdminPage />;
-  }
-
-  // ========================================
-  // HOME PAGE
-  // ========================================
-
-  else if (path === '/') {
-    page = <Home />;
-  }
-
-  // ========================================
-  // ABOUT US PAGE
-  // ========================================
-
-  else if (path === '/about-us') {
-    page = <AboutUs />;
-  }
-
-  // ========================================
-  // ALL SERVICES PAGE
-  // ========================================
-
-  else if (path === '/services') {
-    page = <Capabilities />;
-  }
-
-  // ========================================
-  // INDIVIDUAL SERVICE PAGES
-  // ========================================
-
-  else if (path.startsWith('/services/')) {
-    const slug = path.split('/')[2];
-
+  if (path.startsWith('/services/')) {
+    const slug = path.split('/')[2] as keyof typeof serviceRoutes;
     const ServicePage = serviceRoutes[slug];
 
-    if (ServicePage) {
-      page = <ServicePage />;
-    } else {
-      page = <SimplePage title="Service not found." />;
-    }
+    return ServicePage
+      ? <ServicePage />
+      : <SimplePage title="Service not found." />;
   }
 
-  // ========================================
-  // CONTACT US PAGE
-  // ========================================
+  if (path === '/contact-us') return <ContactUs />;
+  if (path === '/career') return <Career />;
+  if (path === '/our-team') return <TeamPage />;
+  if (path === '/industries') return <Industries />;
+  if (path === '/portfolio') return <Portfolio />;
+  if (path === '/blogs') return <Blogs />;
+  if (path === '/blogs/article') return <BlogArticle />;
 
-  else if (path === '/contact-us') {
-    page = <ContactUs />;
+  if (path.startsWith('/blogs/')) {
+    return blogSlugs.has(path.split('/')[2])
+      ? <BlogArticle />
+      : <SimplePage title="Blog article not found." />;
   }
 
-  // ========================================
-  // CAREER PAGE
-  // ========================================
+  if (path === '/privacy-policy')
+    return <LegalPage type="privacy" />;
 
-  else if (path === '/career') {
-    page = <Career />;
-  }
+  if (path === '/terms-and-conditions')
+    return <LegalPage type="terms" />;
 
-  // ========================================
-  // OUR TEAM PAGE
-  // ========================================
+  return <SimplePage title="Let's make something useful." />;
+}
 
-  else if (path === '/our-team') {
-    page = <TeamPage />;
-  }
+function RouteFallback() {
+  return (
+    <div
+      className="route-fallback"
+      role="status"
+      aria-live="polite"
+    >
+      <span
+        className="route-fallback-spinner"
+        aria-hidden="true"
+      />
+      <span>Loading page…</span>
+    </div>
+  );
+}
 
-  // ========================================
-  // INDUSTRIES PAGE
-  // ========================================
+export default function App() {
+  const currentPath = usePath();
 
-  else if (path === '/industries') {
-    page = <Industries />;
-  }
+  const path =
+    currentPath
+      .split('?')[0]
+      .split('#')[0]
+      .replace(/\/+$/, '') || '/';
 
-  // ========================================
-  // PORTFOLIO PAGE
-  // ========================================
+  const isAdmin = path.startsWith('/admin');
 
-  else if (path === '/portfolio') {
-    page = <Portfolio />;
-  }
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [path]);
 
-  // ========================================
-  // BLOGS MAIN PAGE
-  // ========================================
-
-  else if (path === '/blogs') {
-    page = <Blogs />;
-  }
-
-  // ========================================
-  // BLOG ARTICLE PAGE
-  // Supports:
-  //
-  // /blogs/article
-  // /blogs/article?post=local-seo-visakhapatnam
-  // /blogs/article?post=social-media-marketing-2026
-  // /blogs/article?post=why-choose-solifyhub
-  //
-  // /blogs/local-seo-visakhapatnam
-  // /blogs/social-media-marketing-2026
-  // /blogs/why-choose-solifyhub
-  // ========================================
-
-  else if (path === '/blogs/article') {
-    page = <BlogArticle />;
-  }
-
-  else if (path.startsWith('/blogs/')) {
-    const slug = path.split('/')[2];
-
-    if (blogSlugs.includes(slug)) {
-      page = <BlogArticle />;
-    } else {
-      page = <SimplePage title="Blog article not found." />;
-    }
-  }
-
-  // ========================================
-  // PRIVACY POLICY PAGE
-  // ========================================
-
-  else if (path === '/privacy-policy') {
-    page = <LegalPage type="privacy" />;
-  }
-
-  // ========================================
-  // TERMS AND CONDITIONS PAGE
-  // ========================================
-
-  else if (path === '/terms-and-conditions') {
-    page = <LegalPage type="terms" />;
-  }
-
-  // ========================================
-  // FALLBACK PAGE
-  // ========================================
-
-  else {
-    page = (
-      <SimplePage title="Let's make something useful." />
+  if (isAdmin) {
+    return (
+      <Suspense fallback={<RouteFallback />}>
+        <AdminPage />
+      </Suspense>
     );
   }
-
-  // ========================================
-  // GLOBAL WEBSITE LAYOUT
-  // ========================================
 
   return (
     <div className="app-shell">
       <Header />
-
       <SocialRail />
 
-      <div key={currentPath} className="page-enter">
-        {page}
-      </div>
+      <main className="page-enter">
+        <Suspense fallback={<RouteFallback />}>
+          <RouteContent path={path} />
+        </Suspense>
+      </main>
 
       <Footer />
     </div>
   );
 }
-
-export default App;

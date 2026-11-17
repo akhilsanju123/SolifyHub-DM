@@ -119,10 +119,12 @@ export default function Header() {
       document.body.style.overflow;
 
     document.body.style.overflow = "hidden";
+    document.documentElement.classList.add("mobile-nav-open");
 
     return () => {
       document.body.style.overflow =
         previousOverflow;
+      document.documentElement.classList.remove("mobile-nav-open");
     };
   }, [open]);
 
@@ -536,6 +538,7 @@ export default function Header() {
             onClick={() => setOpen(!open)}
             aria-label="Toggle menu"
             aria-expanded={open}
+            aria-controls="mobile-navigation"
           >
             <span className="hamburger-lines" aria-hidden="true">
               <span></span>
@@ -551,6 +554,8 @@ export default function Header() {
       ============================================ */}
 
       <div
+        id="mobile-navigation"
+        aria-hidden={!open}
         className={`mobile-menu fixed inset-x-0 bottom-0 top-[76px] z-50 overflow-y-auto px-6 py-8 ${open ? "is-open" : "is-closed"}`}
       >
           <div className="mobile-menu-inner">
